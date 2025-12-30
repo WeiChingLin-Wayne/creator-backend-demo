@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>觀眾資訊卡 - 直播後台</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            background: #f5f5f7;
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #000;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #000;
+            color: #fff;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            flex: 1;
+        }
+        .stats-badge {
+            background: #E65100;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Search */
+        .search-box {
+            margin-bottom: 30px;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 14px 20px;
+            font-size: 16px;
+            border: 2px solid #000;
+            border-radius: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus {
+            border-color: #E65100;
+        }
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        /* Viewer Card */
+        .viewer-card {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .viewer-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        .viewer-card.hidden {
+            display: none;
+        }
+
+        .card-header {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header:hover {
+            background: #f0f0f0;
+        }
+        .card-header h3 {
+            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .expand-icon {
+            color: #E65100;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .viewer-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+        .about {
+            font-size: 14px;
+            color: #1a1a1a;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            min-height: 44px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+        }
+        .stat-value.highlight {
+            color: #E65100;
+        }
+
+        /* Interaction Log */
+        .interaction-log {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .viewer-card.expanded .interaction-log {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-header {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 10px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .log-entries {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .log-entry {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-date {
+            color: #999;
+            font-size: 12px;
+            min-width: 45px;
+        }
+        .log-time {
+            color: #E65100;
+            font-weight: 600;
+            min-width: 50px;
+        }
+        .log-content {
+            color: #1a1a1a;
+            flex: 1;
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 18px;
+            display: none;
+        }
+        .no-results.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-btn">← 返回</a>
+            <h1>觀眾資訊卡</h1>
+            <span class="stats-badge" id="count-badge">12 位觀眾</span>
+        </header>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="search" placeholder="搜尋觀眾暱稱..." autofocus>
+        </div>
+
+        <div class="cards-grid" id="cards-grid"></div>
+        <div class="no-results" id="no-results">找不到符合的觀眾</div>
+    </div>
+
+    <script src="data/viewers.js"></script>
+    <script>
+        const grid = document.getElementById('cards-grid');
+        const searchInput = document.getElementById('search');
+        const noResults = document.getElementById('no-results');
+        const countBadge = document.getElementById('count-badge');
+
+        // Render viewer cards
+        function renderViewers() {
+            grid.innerHTML = '';
+            viewers.forEach((viewer, index) => {
+                const card = document.createElement('div');
+                card.className = 'viewer-card';
+                card.dataset.nickname = viewer.nickname.toLowerCase();
+
+                // Build interaction log HTML
+                const logHtml = viewer.interactionLog.map(entry => `
+                    <div class="log-entry">
+                        <span class="log-date">${entry.date}</span>
+                        <span class="log-time">${entry.time}</span>
+                        <span class="log-content">${entry.content}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${viewer.nickname}</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="about">${viewer.about}</p>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-label">互動次數</div>
+                                <div class="stat-value">${viewer.interactionCount}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">累計打賞</div>
+                                <div class="stat-value ${viewer.totalDonation > 0 ? 'highlight' : ''}">
+                                    ${viewer.totalDonation > 0 ? '$' + viewer.totalDonation.toFixed(0) : '-'}
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">最近互動</div>
+                                <div class="stat-value">${viewer.lastSeen}</div>
+                            </div>
+                        </div>
+                        <div class="interaction-log">
+                            <div class="log-header">互動紀錄</div>
+                            <div class="log-entries">
+                                ${logHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Toggle expand on header click
+                card.querySelector('.card-header').addEventListener('click', () => {
+                    card.classList.toggle('expanded');
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter by prefix matching
+        function filterViewers(query) {
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.viewer-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const nickname = card.dataset.nickname;
+                // Prefix matching: nickname starts with query or contains query
+                const match = q === '' || nickname.startsWith(q) || nickname.includes(q);
+                card.classList.toggle('hidden', !match);
+                if (match) visibleCount++;
+            });
+
+            noResults.classList.toggle('show', visibleCount === 0);
+            countBadge.textContent = `${visibleCount} 位觀眾`;
+        }
+
+        // Initialize
+        renderViewers();
+        countBadge.textContent = `${viewers.length} 位觀眾`;
+
+        // Search input
+        searchInput.addEventListener('input', (e) => {
+            filterViewers(e.target.value);
+        });
+    </script>
+</body>
+</html>

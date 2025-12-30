@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>直播分析 - 直播後台</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            background: #f5f5f7;
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #000;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #000;
+            color: #fff;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            flex: 1;
+        }
+
+        /* Section */
+        .section {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .section-header {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            padding: 16px 20px;
+        }
+        .section-header h2 {
+            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .section-body {
+            padding: 20px;
+        }
+
+        /* Timeline */
+        .timeline-wrapper {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+        .timeline-container {
+            position: relative;
+            min-width: 900px;
+            padding: 20px 40px;
+        }
+
+        /* Timeline track */
+        .timeline-track {
+            height: 6px;
+            background: #ddd;
+            border-radius: 3px;
+            position: relative;
+            margin-top: 110px;
+        }
+
+        /* Interaction curve - sits on timeline */
+        .interaction-curve {
+            position: absolute;
+            left: 40px;
+            right: 40px;
+            top: 60px;
+            height: 56px;
+            pointer-events: none;
+        }
+        .interaction-curve svg {
+            width: 100%;
+            height: 100%;
+        }
+        .curve-line {
+            fill: none;
+            stroke: #4CAF50;
+            stroke-width: 2;
+        }
+        .curve-area {
+            fill: rgba(76, 175, 80, 0.15);
+        }
+
+        /* Markers layer - ends at timeline */
+        .markers-layer {
+            position: absolute;
+            left: 40px;
+            right: 40px;
+            top: 0;
+            height: 116px;
+        }
+
+        /* Gift marker */
+        .gift-marker {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translateX(-50%);
+        }
+        .gift-amount {
+            background: #E65100;
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            border: 2px solid #000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .gift-line {
+            width: 2px;
+            background: #E65100;
+            flex-grow: 1;
+            min-height: 20px;
+        }
+
+        /* Emotion marker */
+        .emotion-marker {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: translateX(-50%);
+        }
+        .emotion-badge {
+            background: #555;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #333;
+        }
+        .emotion-line {
+            width: 2px;
+            background: #555;
+            flex-grow: 1;
+            min-height: 15px;
+        }
+
+        /* Time markers */
+        .time-markers {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 20px;
+        }
+        .time-marker {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Chapters below timeline */
+        .chapters-container {
+            display: flex;
+            margin-top: 15px;
+            padding: 0 20px;
+        }
+        .chapter {
+            flex: 1;
+            padding: 8px 4px;
+            border-left: 2px solid #E65100;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.4;
+        }
+        .chapter:first-child {
+            border-left: none;
+        }
+        .chapter-time {
+            color: #E65100;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        /* Customers section - no card wrapper */
+        .customers-section {
+            margin-top: 24px;
+        }
+        .customers-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        /* Customer cards */
+        .customers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .customer-card {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .customer-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .customer-header {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .customer-header:hover {
+            background: #f0f0f0;
+        }
+        .customer-header h4 {
+            color: #1a1a1a;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .expand-icon {
+            color: #E65100;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .customer-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .customer-body {
+            padding: 20px;
+        }
+        .key-interaction {
+            background: linear-gradient(90deg, #fff7ed 0%, #fffbf5 100%);
+            border-left: 3px solid #E65100;
+            padding: 10px 12px;
+            margin: -20px -20px 16px -20px;
+        }
+        .key-interaction-label {
+            font-size: 10px;
+            color: #BF360C;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .key-interaction-text {
+            font-size: 14px;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        .about-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .interaction-log {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .customer-card.expanded .interaction-log {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-header {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 16px 0 10px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .log-entries {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+        .log-entry {
+            display: flex;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-time {
+            color: #E65100;
+            font-weight: 600;
+            min-width: 45px;
+        }
+        .log-content {
+            color: #333;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="streams.html" class="back-btn">← 返回</a>
+            <h1 id="page-title">直播分析</h1>
+        </header>
+
+        <!-- Timeline Section -->
+        <section class="section">
+            <div class="section-header">
+                <h2>時間線</h2>
+            </div>
+            <div class="section-body">
+                <div class="timeline-wrapper">
+                    <div class="timeline-container" id="timeline-container">
+                        <div class="interaction-curve" id="interaction-curve"></div>
+                        <div class="markers-layer" id="markers-layer"></div>
+                        <div class="timeline-track"></div>
+                    </div>
+                    <div class="time-markers" id="time-markers"></div>
+                    <div class="chapters-container" id="chapters-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customers Section -->
+        <section class="customers-section">
+            <h2 class="customers-title">觀眾互動總結</h2>
+            <div class="customers-grid" id="customers-grid"></div>
+        </section>
+    </div>
+
+    <script src="data/stream1.js"></script>
+    <script>
+        // Convert seconds to position percentage
+        function timeToPercent(seconds) {
+            return (seconds / totalDuration) * 100;
+        }
+
+        // Format seconds to mm:ss
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Render interaction curve
+        function renderInteractionCurve() {
+            const container = document.getElementById('interaction-curve');
+            const width = container.offsetWidth || 820;
+            const height = 60;
+
+            // Generate interaction data points (simulated engagement over time)
+            const segments = 50;
+            const points = [];
+
+            // Create base engagement curve with some randomness
+            for (let i = 0; i <= segments; i++) {
+                const time = (i / segments) * totalDuration;
+                let intensity = 0.2 + Math.random() * 0.1; // Base level
+
+                // Boost intensity near gifts and emotions
+                gifts.forEach(g => {
+                    const dist = Math.abs(time - g.time);
+                    if (dist < 300) intensity += (1 - dist/300) * 0.4;
+                });
+                emotions.forEach(e => {
+                    const dist = Math.abs(time - e.time);
+                    if (dist < 200) intensity += (1 - dist/200) * 0.3 * (e.intensity || 1);
+                });
+
+                intensity = Math.min(1, intensity);
+                points.push({ x: (i / segments) * width, y: height - intensity * height * 0.9 });
+            }
+
+            // Create SVG path
+            const linePath = points.map((p, i) =>
+                (i === 0 ? 'M' : 'L') + `${p.x.toFixed(1)},${p.y.toFixed(1)}`
+            ).join(' ');
+
+            const areaPath = linePath + ` L${width},${height} L0,${height} Z`;
+
+            container.innerHTML = `
+                <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none">
+                    <path class="curve-area" d="${areaPath}"/>
+                    <path class="curve-line" d="${linePath}"/>
+                </svg>
+            `;
+        }
+
+        // Render timeline
+        function renderTimeline() {
+            const markersLayer = document.getElementById('markers-layer');
+            const timeMarkers = document.getElementById('time-markers');
+            const chaptersContainer = document.getElementById('chapters-container');
+
+            const layerHeight = 116;
+            const minProximity = 8; // Minimum % distance before collision
+
+            // Process gifts separately - assign rows based on proximity
+            const giftMarkers = gifts.map((g, i) => ({ ...g, type: 'gift', percent: timeToPercent(g.time) }));
+            const emotionMarkers = emotions.map((e, i) => ({ ...e, type: 'emotion', percent: timeToPercent(e.time) }));
+
+            // Assign rows to gifts (row 0 or 1) based on proximity
+            giftMarkers.forEach((gift, i) => {
+                gift.row = 0;
+                for (let j = 0; j < i; j++) {
+                    if (Math.abs(gift.percent - giftMarkers[j].percent) < minProximity && giftMarkers[j].row === 0) {
+                        gift.row = 1;
+                        break;
+                    }
+                }
+            });
+
+            // Assign rows to emotions (row 0, 1, 2) based on proximity
+            emotionMarkers.forEach((emotion, i) => {
+                emotion.row = 0;
+                for (let j = 0; j < i; j++) {
+                    if (Math.abs(emotion.percent - emotionMarkers[j].percent) < minProximity) {
+                        if (emotionMarkers[j].row === emotion.row) {
+                            emotion.row++;
+                            if (emotion.row > 2) emotion.row = 0;
+                        }
+                    }
+                }
+            });
+
+            // Render gift markers
+            giftMarkers.forEach((item) => {
+                const marker = document.createElement('div');
+                marker.className = 'gift-marker';
+                marker.style.left = `${item.percent}%`;
+                const topOffset = item.row * 28;
+                marker.style.top = `${topOffset}px`;
+                marker.style.height = `${layerHeight - topOffset}px`;
+                marker.innerHTML = `
+                    <div class="gift-amount">$${item.amount.toFixed(0)}</div>
+                    <div class="gift-line"></div>
+                `;
+                marker.title = `${item.timestamp} - ${item.nickname}: ${item.reason}`;
+                markersLayer.appendChild(marker);
+            });
+
+            // Render emotion markers
+            emotionMarkers.forEach((item) => {
+                const marker = document.createElement('div');
+                marker.className = 'emotion-marker';
+                marker.style.left = `${item.percent}%`;
+                const topOffset = 50 + item.row * 20;
+                marker.style.top = `${topOffset}px`;
+                marker.style.height = `${layerHeight - topOffset}px`;
+                marker.innerHTML = `
+                    <div class="emotion-badge">${item.emoji} ${item.label}</div>
+                    <div class="emotion-line"></div>
+                `;
+                marker.title = `${item.timestamp} - ${item.context}`;
+                markersLayer.appendChild(marker);
+            });
+
+            // Render time markers
+            const intervals = 5;
+            for (let i = 0; i <= intervals; i++) {
+                const time = Math.floor((totalDuration / intervals) * i);
+                const marker = document.createElement('span');
+                marker.className = 'time-marker';
+                marker.textContent = formatTime(time);
+                timeMarkers.appendChild(marker);
+            }
+
+            // Render chapters
+            chapters.forEach((chapter, i) => {
+                const div = document.createElement('div');
+                div.className = 'chapter';
+                div.innerHTML = `
+                    <div class="chapter-time">${chapter.timestamp}</div>
+                    <div class="chapter-title">${chapter.title}</div>
+                `;
+                chaptersContainer.appendChild(div);
+            });
+        }
+
+        // Render customers
+        function renderCustomers() {
+            const grid = document.getElementById('customers-grid');
+
+            customers.forEach((customer, i) => {
+                const card = document.createElement('div');
+                card.className = 'customer-card';
+
+                const logHtml = customer.interactionLog.map(entry => `
+                    <div class="log-entry">
+                        <span class="log-time">${entry.time}</span>
+                        <span class="log-content">${entry.content}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="customer-header">
+                        <h4>${customer.nickname}</h4>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="customer-body">
+                        <div class="key-interaction">
+                            <div class="key-interaction-label">重點互動</div>
+                            <div class="key-interaction-text">${customer.keyInteractions}</div>
+                        </div>
+                        <p class="about-text">${customer.about}</p>
+                        <div class="interaction-log">
+                            <div class="log-header">互動紀錄</div>
+                            <div class="log-entries">
+                                ${logHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Toggle expand
+                card.querySelector('.customer-header').addEventListener('click', () => {
+                    card.classList.toggle('expanded');
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Initialize
+        renderTimeline();
+        renderInteractionCurve();
+        renderCustomers();
+
+        // Set page title from URL params
+        const params = new URLSearchParams(window.location.search);
+        const streamId = params.get('id');
+        if (streamId) {
+            document.getElementById('page-title').textContent = `直播分析 - ${streamId}`;
+        }
+    </script>
+</body>
+</html>

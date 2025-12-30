@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>過去直播分析 - 直播後台</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+            background: #f5f5f7;
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #000;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background: #000;
+            color: #fff;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            flex: 1;
+        }
+        .stats-badge {
+            background: #E65100;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Stream List */
+        .stream-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Stream Card */
+        .stream-card {
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .stream-card:hover {
+            border-color: #E65100;
+            box-shadow: 0 4px 16px rgba(230, 81, 0, 0.1);
+        }
+
+        .stream-content {
+            padding: 24px;
+        }
+        .stream-date {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        .stream-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .stream-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .stream-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #555;
+        }
+        .stream-stat .icon {
+            font-size: 16px;
+        }
+        .stream-stat strong {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #E65100;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid #000;
+            transition: background 0.2s;
+        }
+        .view-btn:hover {
+            background: #BF360C;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-btn">← 返回</a>
+            <h1>過去直播分析</h1>
+            <span class="stats-badge" id="count-badge">5 場直播</span>
+        </header>
+
+        <div class="stream-list" id="stream-list"></div>
+    </div>
+
+    <script src="data/streams.js"></script>
+    <script>
+        const list = document.getElementById('stream-list');
+        const countBadge = document.getElementById('count-badge');
+
+        // Render stream list
+        function renderStreams() {
+            list.innerHTML = '';
+            streams.forEach((stream, index) => {
+                const card = document.createElement('div');
+                card.className = 'stream-card';
+
+                card.innerHTML = `
+                    <div class="stream-content">
+                        <div class="stream-date">${stream.date} ${stream.time}</div>
+                        <div class="stream-title">${stream.title}</div>
+                        <div class="stream-stats">
+                            <div class="stream-stat">
+                                <span class="icon">🕐</span>
+                                時長: <strong>${stream.durationText}</strong>
+                            </div>
+                            <div class="stream-stat">
+                                <span class="icon">👥</span>
+                                觀眾: <strong>${stream.viewerCount} 人</strong>
+                            </div>
+                            <div class="stream-stat">
+                                <span class="icon">🎁</span>
+                                打賞: <strong>$${stream.totalDonation.toFixed(0)}</strong>
+                            </div>
+                        </div>
+                        <a href="analysis.html?id=${stream.id}" class="view-btn">
+                            查看分析 →
+                        </a>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+            countBadge.textContent = `${streams.length} 場直播`;
+        }
+
+        renderStreams();
+    </script>
+</body>
+</html>
