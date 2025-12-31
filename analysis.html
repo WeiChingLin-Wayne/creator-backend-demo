@@ -4,104 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>直播分析 - 直播後台</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-            background: #f5f5f7;
-            color: #333;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .logo {
-            max-width: 100px;
-            height: auto;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #000;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 8px 16px;
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .back-btn:hover {
-            background: #000;
-            color: #fff;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
-            flex: 1;
-        }
-
-        /* Section */
-        .section {
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-        .section-header {
-            background: #f8f8f8;
-            border-bottom: 1px solid #ddd;
-            padding: 16px 20px;
-        }
-        .section-header h2 {
-            color: #1a1a1a;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .section-body {
-            padding: 20px;
-        }
+        /* 分析頁特定樣式 */
 
         /* Timeline */
         .timeline-wrapper {
             overflow-x: auto;
-            padding: 20px 0;
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch;
         }
         .timeline-container {
             position: relative;
-            min-width: 900px;
-            padding: 20px 40px;
+            min-width: 600px;
+            padding: 10px 40px 0;
         }
 
         /* Timeline track */
         .timeline-track {
-            height: 6px;
-            background: #ddd;
-            border-radius: 3px;
+            height: 4px;
+            background: #ccc;
+            border-radius: 2px;
             position: relative;
             margin-top: 110px;
         }
 
-        /* Interaction curve - sits on timeline */
+        /* Interaction curve */
         .interaction-curve {
             position: absolute;
             left: 40px;
@@ -123,7 +51,7 @@
             fill: rgba(76, 175, 80, 0.15);
         }
 
-        /* Markers layer - ends at timeline */
+        /* Markers layer */
         .markers-layer {
             position: absolute;
             left: 40px;
@@ -139,6 +67,12 @@
             flex-direction: column;
             align-items: center;
             transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 10;
+        }
+        .gift-marker:hover .gift-amount {
+            background: #BF360C;
+            transform: scale(1.05);
         }
         .gift-amount {
             background: #E65100;
@@ -150,6 +84,7 @@
             white-space: nowrap;
             border: 2px solid #000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s;
         }
         .gift-line {
             width: 2px;
@@ -165,6 +100,12 @@
             flex-direction: column;
             align-items: center;
             transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 5;
+        }
+        .emotion-marker:hover .emotion-badge {
+            background: #333;
+            transform: scale(1.05);
         }
         .emotion-badge {
             background: #555;
@@ -178,6 +119,7 @@
             align-items: center;
             gap: 4px;
             border: 1px solid #333;
+            transition: all 0.2s;
         }
         .emotion-line {
             width: 2px;
@@ -190,16 +132,16 @@
         .time-markers {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
-            padding: 0 20px;
+            margin-top: 6px;
+            padding: 0 40px;
         }
         .time-marker {
-            font-size: 12px;
-            color: #666;
-            font-weight: 500;
+            font-size: 13px;
+            color: #000;
+            font-weight: 600;
         }
 
-        /* Chapters below timeline */
+        /* Chapters */
         .chapters-container {
             display: flex;
             margin-top: 15px;
@@ -222,7 +164,7 @@
             margin-bottom: 2px;
         }
 
-        /* Customers section - no card wrapper */
+        /* Customers section */
         .customers-section {
             margin-top: 24px;
         }
@@ -268,92 +210,135 @@
             font-size: 18px;
             font-weight: 600;
         }
-        .expand-icon {
-            color: #E65100;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
-        .customer-card.expanded .expand-icon {
-            transform: rotate(180deg);
-        }
 
         .customer-body {
             padding: 20px;
         }
-        .about-text {
-            font-size: 14px;
-            color: #1a1a1a;
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
 
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
+        /* Marker Popover */
+        .marker-popover {
+            position: fixed;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 320px;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
         }
-        .stat-item {
-            text-align: center;
+        .marker-popover.visible {
+            opacity: 1;
+            visibility: visible;
         }
-        .stat-label {
-            font-size: 11px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #000;
-        }
-        .stat-value.highlight {
-            color: #E65100;
-        }
-
-        .interaction-log {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        .customer-card.expanded .interaction-log {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .log-header {
-            font-size: 11px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 16px 0 10px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-        }
-        .log-entries {
-            background: #fafafa;
-            border-radius: 8px;
-            padding: 10px 14px;
-        }
-        .log-entry {
+        .marker-popover .popover-header {
             display: flex;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 13px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #eee;
         }
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-        .log-time {
+        .marker-popover .popover-time {
+            font-size: 14px;
             color: #E65100;
             font-weight: 600;
-            min-width: 45px;
         }
-        .log-content {
-            color: #333;
-            flex: 1;
+        .marker-popover .popover-type {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .marker-popover .popover-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 8px;
+        }
+        .marker-popover .popover-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .marker-popover .popover-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+            padding: 4px;
+            line-height: 1;
+        }
+        .marker-popover .popover-close:hover {
+            color: #000;
+        }
+
+        /* Summary Inline */
+        .summary-inline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #666;
+        }
+        .summary-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .summary-item span {
+            font-weight: 600;
+            color: #000;
+        }
+        .summary-item.donation span {
+            color: #E65100;
+        }
+        .summary-divider {
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline-container {
+                min-width: 500px;
+                padding: 20px 20px;
+            }
+            .markers-layer {
+                left: 20px;
+                right: 20px;
+            }
+            .interaction-curve {
+                left: 20px;
+                right: 20px;
+            }
+            .gift-amount {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            .emotion-badge {
+                font-size: 10px;
+                padding: 3px 8px;
+            }
+            .chapter {
+                font-size: 10px;
+            }
+            .summary-inline {
+                font-size: 13px;
+                gap: 6px 12px;
+            }
+            .customers-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -363,6 +348,17 @@
             <a href="index.html"><img src="data/Ekkorn_Logo_白底_trimmed.png" alt="Ekkorn Logo" class="logo"></a>
             <h1 id="page-title">直播分析</h1>
         </header>
+
+        <!-- Summary Section (Inline) -->
+        <div class="summary-inline" id="summary-inline">
+            <span class="summary-item">📅 <span id="summary-date">--</span></span>
+            <span class="summary-divider">|</span>
+            <span class="summary-item">🕐 <span id="summary-duration">--</span></span>
+            <span class="summary-divider">|</span>
+            <span class="summary-item">👥 <span id="summary-viewers">--</span></span>
+            <span class="summary-divider">|</span>
+            <span class="summary-item donation">🎁 <span id="summary-donation">--</span></span>
+        </div>
 
         <!-- Timeline Section -->
         <section class="section">
@@ -389,8 +385,84 @@
         </section>
     </div>
 
+    <!-- Marker Popover -->
+    <div class="marker-popover" id="marker-popover">
+        <button class="popover-close" id="popover-close">&times;</button>
+        <div class="popover-header">
+            <span class="popover-time" id="popover-time"></span>
+            <span class="popover-type" id="popover-type"></span>
+        </div>
+        <div class="popover-title" id="popover-title"></div>
+        <div class="popover-content" id="popover-content"></div>
+    </div>
+
+    <script src="data/streams.js"></script>
     <script src="data/stream1.js"></script>
     <script>
+        // Get stream ID from URL
+        const params = new URLSearchParams(window.location.search);
+        const streamId = params.get('id') || 'stream1';
+
+        // Find stream metadata
+        const streamMeta = streams.find(s => s.id === streamId) || streams[0];
+
+        // Update summary section
+        document.getElementById('summary-date').textContent = streamMeta.date;
+        document.getElementById('summary-duration').textContent = streamMeta.durationText;
+        document.getElementById('summary-viewers').textContent = customers.length + ' 人';
+        document.getElementById('summary-donation').textContent = '$' + gifts.reduce((sum, g) => sum + g.amount, 0).toFixed(0);
+        document.getElementById('page-title').textContent = streamMeta.title;
+
+        // Popover functions
+        const popover = document.getElementById('marker-popover');
+        const popoverClose = document.getElementById('popover-close');
+
+        function showPopover(type, data, element) {
+            const rect = element.getBoundingClientRect();
+            const popoverTime = document.getElementById('popover-time');
+            const popoverType = document.getElementById('popover-type');
+            const popoverTitle = document.getElementById('popover-title');
+            const popoverContent = document.getElementById('popover-content');
+
+            popoverTime.textContent = data.timestamp;
+
+            if (type === 'gift') {
+                popoverType.textContent = '打賞';
+                popoverTitle.textContent = `$${data.amount.toFixed(0)} - ${data.nickname}`;
+                popoverContent.textContent = data.reason;
+            } else {
+                popoverType.textContent = '情緒標記';
+                popoverTitle.textContent = `${data.emoji} ${data.label}`;
+                popoverContent.textContent = data.context;
+            }
+
+            // Position popover
+            let left = rect.left + rect.width / 2 - 160;
+            let top = rect.bottom + 10;
+
+            // Keep within viewport
+            if (left < 10) left = 10;
+            if (left + 320 > window.innerWidth) left = window.innerWidth - 330;
+            if (top + 200 > window.innerHeight) {
+                top = rect.top - 150;
+            }
+
+            popover.style.left = left + 'px';
+            popover.style.top = top + 'px';
+            popover.classList.add('visible');
+        }
+
+        function hidePopover() {
+            popover.classList.remove('visible');
+        }
+
+        popoverClose.addEventListener('click', hidePopover);
+        document.addEventListener('click', (e) => {
+            if (!popover.contains(e.target) && !e.target.closest('.gift-marker') && !e.target.closest('.emotion-marker')) {
+                hidePopover();
+            }
+        });
+
         // Convert seconds to position percentage
         function timeToPercent(seconds) {
             return (seconds / totalDuration) * 100;
@@ -409,16 +481,13 @@
             const width = container.offsetWidth || 820;
             const height = 60;
 
-            // Generate interaction data points (simulated engagement over time)
             const segments = 50;
             const points = [];
 
-            // Create base engagement curve with some randomness
             for (let i = 0; i <= segments; i++) {
                 const time = (i / segments) * totalDuration;
-                let intensity = 0.2 + Math.random() * 0.1; // Base level
+                let intensity = 0.2 + Math.random() * 0.1;
 
-                // Boost intensity near gifts and emotions
                 gifts.forEach(g => {
                     const dist = Math.abs(time - g.time);
                     if (dist < 300) intensity += (1 - dist/300) * 0.4;
@@ -432,7 +501,6 @@
                 points.push({ x: (i / segments) * width, y: height - intensity * height * 0.9 });
             }
 
-            // Create SVG path
             const linePath = points.map((p, i) =>
                 (i === 0 ? 'M' : 'L') + `${p.x.toFixed(1)},${p.y.toFixed(1)}`
             ).join(' ');
@@ -454,13 +522,11 @@
             const chaptersContainer = document.getElementById('chapters-container');
 
             const layerHeight = 116;
-            const minProximity = 8; // Minimum % distance before collision
+            const minProximity = 8;
 
-            // Process gifts separately - assign rows based on proximity
             const giftMarkers = gifts.map((g, i) => ({ ...g, type: 'gift', percent: timeToPercent(g.time) }));
             const emotionMarkers = emotions.map((e, i) => ({ ...e, type: 'emotion', percent: timeToPercent(e.time) }));
 
-            // Assign rows to gifts (row 0 or 1) based on proximity
             giftMarkers.forEach((gift, i) => {
                 gift.row = 0;
                 for (let j = 0; j < i; j++) {
@@ -471,7 +537,6 @@
                 }
             });
 
-            // Assign rows to emotions (row 0, 1, 2) based on proximity
             emotionMarkers.forEach((emotion, i) => {
                 emotion.row = 0;
                 for (let j = 0; j < i; j++) {
@@ -485,7 +550,7 @@
             });
 
             // Render gift markers
-            giftMarkers.forEach((item) => {
+            giftMarkers.forEach((item, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'gift-marker';
                 marker.style.left = `${item.percent}%`;
@@ -493,15 +558,18 @@
                 marker.style.top = `${topOffset}px`;
                 marker.style.height = `${layerHeight - topOffset}px`;
                 marker.innerHTML = `
-                    <div class="gift-amount">$${item.amount.toFixed(0)}</div>
+                    <div class="gift-amount">🎁 $${item.amount.toFixed(0)}</div>
                     <div class="gift-line"></div>
                 `;
-                marker.title = `${item.timestamp} - ${item.nickname}: ${item.reason}`;
+                marker.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showPopover('gift', gifts[index], marker);
+                });
                 markersLayer.appendChild(marker);
             });
 
             // Render emotion markers
-            emotionMarkers.forEach((item) => {
+            emotionMarkers.forEach((item, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'emotion-marker';
                 marker.style.left = `${item.percent}%`;
@@ -512,7 +580,10 @@
                     <div class="emotion-badge">${item.emoji} ${item.label}</div>
                     <div class="emotion-line"></div>
                 `;
-                marker.title = `${item.timestamp} - ${item.context}`;
+                marker.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showPopover('emotion', emotions[index], marker);
+                });
                 markersLayer.appendChild(marker);
             });
 
@@ -553,7 +624,6 @@
                     </div>
                 `).join('');
 
-                // 計算該觀眾的打賞金額
                 const donation = gifts
                     .filter(g => g.nickname === customer.nickname)
                     .reduce((sum, g) => sum + g.amount, 0);
@@ -590,7 +660,6 @@
                     </div>
                 `;
 
-                // Toggle expand
                 card.querySelector('.customer-header').addEventListener('click', () => {
                     card.classList.toggle('expanded');
                 });
@@ -603,13 +672,6 @@
         renderTimeline();
         renderInteractionCurve();
         renderCustomers();
-
-        // Set page title from URL params
-        const params = new URLSearchParams(window.location.search);
-        const streamId = params.get('id');
-        if (streamId) {
-            document.getElementById('page-title').textContent = `直播分析 - ${streamId}`;
-        }
     </script>
 </body>
 </html>

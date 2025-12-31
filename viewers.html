@@ -4,98 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>觀眾資訊卡 - 直播後台</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-            background: #f5f5f7;
-            color: #333;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .logo {
-            max-width: 100px;
-            height: auto;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #000;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 8px 16px;
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .back-btn:hover {
-            background: #000;
-            color: #fff;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
-            flex: 1;
-        }
-        .stats-badge {
-            background: #E65100;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* Search */
-        .search-box {
-            margin-bottom: 30px;
-        }
-        .search-input {
-            width: 100%;
-            max-width: 500px;
-            padding: 14px 20px;
-            font-size: 16px;
-            border: 2px solid #000;
-            border-radius: 12px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .search-input:focus {
-            border-color: #E65100;
-        }
-        .search-input::placeholder {
-            color: #999;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 20px;
-        }
-
-        /* Viewer Card */
+        /* 觀眾頁特定樣式 */
         .viewer-card {
             background: #fff;
             border: 2px solid #000;
@@ -109,130 +20,6 @@
         .viewer-card.hidden {
             display: none;
         }
-
-        .card-header {
-            background: #f8f8f8;
-            border-bottom: 1px solid #ddd;
-            padding: 16px 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .card-header:hover {
-            background: #f0f0f0;
-        }
-        .card-header h3 {
-            color: #1a1a1a;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .expand-icon {
-            color: #E65100;
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
-        .viewer-card.expanded .expand-icon {
-            transform: rotate(180deg);
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-        .about {
-            font-size: 14px;
-            color: #1a1a1a;
-            line-height: 1.6;
-            margin-bottom: 16px;
-            min-height: 44px;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-label {
-            font-size: 11px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #000;
-        }
-        .stat-value.highlight {
-            color: #E65100;
-        }
-
-        /* Interaction Log */
-        .interaction-log {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        .viewer-card.expanded .interaction-log {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .log-header {
-            font-size: 11px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 16px 0 10px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
-        }
-        .log-entries {
-            background: #fafafa;
-            border-radius: 8px;
-            padding: 10px 14px;
-        }
-        .log-entry {
-            display: flex;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 13px;
-            border-bottom: 1px solid #eee;
-        }
-        .log-entry:last-child {
-            border-bottom: none;
-        }
-        .log-date {
-            color: #999;
-            font-size: 12px;
-            min-width: 45px;
-        }
-        .log-time {
-            color: #E65100;
-            font-weight: 600;
-            min-width: 50px;
-        }
-        .log-content {
-            color: #1a1a1a;
-            flex: 1;
-        }
-
-        /* No results */
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            font-size: 18px;
-            display: none;
-        }
-        .no-results.show {
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -240,7 +27,7 @@
         <header>
             <a href="index.html"><img src="data/Ekkorn_Logo_白底_trimmed.png" alt="Ekkorn Logo" class="logo"></a>
             <h1>觀眾資訊卡</h1>
-            <span class="stats-badge" id="count-badge">12 位觀眾</span>
+            <span class="stats-badge" id="count-badge">-- 位觀眾</span>
         </header>
 
         <div class="search-box">
@@ -324,7 +111,6 @@
 
             cards.forEach(card => {
                 const nickname = card.dataset.nickname;
-                // Prefix matching: nickname starts with query or contains query
                 const match = q === '' || nickname.startsWith(q) || nickname.includes(q);
                 card.classList.toggle('hidden', !match);
                 if (match) visibleCount++;

@@ -5,59 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>直播後台</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-            background: #f5f5f7;
-            color: #333;
-            min-height: 100vh;
-        }
-
+        /* 首頁特定樣式 */
         .container {
             max-width: 1000px;
-            margin: 0 auto;
             padding: 40px 20px;
         }
 
-        /* Header */
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .logo {
-            max-width: 150px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #000;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #666;
-        }
-
-        /* Cards Grid */
-        .cards-grid {
+        /* Entry Cards Grid */
+        .entry-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
         }
 
         @media (max-width: 768px) {
-            .cards-grid {
+            .entry-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -105,52 +69,32 @@
             font-weight: 700;
         }
 
-        .entry-card .btn {
-            display: inline-block;
-            background: #E65100;
-            color: #fff;
-            padding: 12px 32px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            border: 2px solid #000;
-            transition: background 0.2s;
-        }
-
         .entry-card:hover .btn {
             background: #BF360C;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            margin-top: 60px;
-            color: #999;
-            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
+        <header class="centered">
             <a href="index.html"><img src="data/Ekkorn_Logo_白底_trimmed.png" alt="Ekkorn Logo" class="logo"></a>
             <h1>直播後台</h1>
             <p class="subtitle">管理您的觀眾與直播分析</p>
         </header>
 
-        <div class="cards-grid">
+        <div class="entry-grid">
             <a href="viewers.html" class="entry-card">
                 <div class="icon">👥</div>
                 <h2>觀眾資訊卡</h2>
-                <p class="stats">累積 <strong>12</strong> 位觀眾</p>
+                <p class="stats">累積 <strong id="viewer-count">--</strong> 位觀眾</p>
                 <span class="btn">查看</span>
             </a>
 
             <a href="streams.html" class="entry-card">
                 <div class="icon">📊</div>
                 <h2>過去直播分析</h2>
-                <p class="stats">共 <strong>5</strong> 場直播</p>
+                <p class="stats">共 <strong id="stream-count">--</strong> 場直播</p>
                 <span class="btn">查看</span>
             </a>
         </div>
@@ -159,6 +103,14 @@
             直播後台 Demo
         </footer>
     </div>
+
+    <script src="data/viewers.js"></script>
+    <script src="data/streams.js"></script>
+    <script>
+        // 動態載入統計數據
+        document.getElementById('viewer-count').textContent = viewers.length;
+        document.getElementById('stream-count').textContent = streams.length;
+    </script>
 </body>
 
 </html>

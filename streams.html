@@ -4,77 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>過去直播分析 - 直播後台</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-            background: #f5f5f7;
-            color: #333;
-            min-height: 100vh;
-        }
+        /* 直播列表頁特定樣式 */
         .container {
             max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
         }
 
-        /* Header */
-        header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .logo {
-            max-width: 100px;
-            height: auto;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #000;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 8px 16px;
-            background: #fff;
-            border: 2px solid #000;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .back-btn:hover {
-            background: #000;
-            color: #fff;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
-            flex: 1;
-        }
-        .stats-badge {
-            background: #E65100;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* Stream List */
         .stream-list {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* Stream Card */
         .stream-card {
             background: #fff;
             border: 2px solid #000;
@@ -122,31 +64,6 @@
             color: #000;
             font-weight: 600;
         }
-
-        .view-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #E65100;
-            color: #fff;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            border: 2px solid #000;
-            transition: background 0.2s;
-        }
-        .view-btn:hover {
-            background: #BF360C;
-        }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
     </style>
 </head>
 <body>
@@ -154,7 +71,7 @@
         <header>
             <a href="index.html"><img src="data/Ekkorn_Logo_白底_trimmed.png" alt="Ekkorn Logo" class="logo"></a>
             <h1>過去直播分析</h1>
-            <span class="stats-badge" id="count-badge">5 場直播</span>
+            <span class="stats-badge" id="count-badge">-- 場直播</span>
         </header>
 
         <div class="stream-list" id="stream-list"></div>
@@ -165,7 +82,6 @@
         const list = document.getElementById('stream-list');
         const countBadge = document.getElementById('count-badge');
 
-        // Render stream list
         function renderStreams() {
             list.innerHTML = '';
             streams.forEach((stream, index) => {
@@ -190,7 +106,7 @@
                                 打賞: <strong>$${stream.totalDonation.toFixed(0)}</strong>
                             </div>
                         </div>
-                        <a href="analysis.html?id=${stream.id}" class="view-btn">
+                        <a href="analysis.html?id=${stream.id}" class="btn small">
                             查看分析 →
                         </a>
                     </div>
