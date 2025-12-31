@@ -1,7 +1,7 @@
 // 觀眾資料 - 累積所有直播的觀眾互動（依互動次數排序）
 const viewers = [
   {
-    nickname: "Fragrantcake故事氣味小商店",
+    nickname: "星空小舖MoonShop",
     about: "經營香氛商店，對香氛產品有專業興趣。非常想賺錢，養了一隻摩羯座的焦慮貓（焦慮到膀胱炎）。晨型人，週末會早起。常參與擲筊環節，對星座話題很有興趣。",
     interactionCount: 156,
     totalDonation: 892.50,
@@ -25,7 +25,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "會計家教 Rock",
+    nickname: "數學老師 Stone",
     about: "處女座，職業是會計家教。體育迷，愛看英超（支持布萊頓，關注日本球員）和棒球（喜歡啦啦隊，去過大巨蛋20次）。剛生小孩，是新手爸爸，早起送小孩。幾乎每場必到。",
     interactionCount: 89,
     totalDonation: 0,
@@ -46,7 +46,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "Eva水水",
+    nickname: "小雨點點",
     about: "天秤座，活躍粉絲。送禮物給主播，表示不想問事只想單純聽主播聊天。關注天氣，常分享生活點滴。",
     interactionCount: 67,
     totalDonation: 456.80,
@@ -65,7 +65,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "傻史尬",
+    nickname: "阿豆仔",
     about: "水瓶座，已婚七年，育有小孩。與老婆（白羊座）是在戀愛網站認識三個月閃婚。2024年工作轉念，被建議2026年要建立專業品牌。常分享婚姻生活趣事。",
     interactionCount: 45,
     totalDonation: 150.00,
@@ -82,7 +82,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "丹尼",
+    nickname: "阿傑",
     about: "雙魚座，單身。極度熱愛工作與公司，自稱口風緊。以前追過足球（亞洲球員），現在較少看。",
     interactionCount: 32,
     totalDonation: 0,
@@ -97,7 +97,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "米老鬼不是米老鼠",
+    nickname: "熊貓不是貓熊",
     about: "射手座。個性Chill，唯一焦慮是沒菸抽。很怕摩羯座（前主管磨合久、曾因得知追求對象是摩羯而放棄）。",
     interactionCount: 21,
     totalDonation: 0,
@@ -112,7 +112,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "Super_Cat",
+    nickname: "Happy_Dog",
     about: "會送禮物支持的觀眾。連續送過雪球小禮物，喜歡貓咪相關話題。",
     interactionCount: 20,
     totalDonation: 380.00,
@@ -125,7 +125,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "胖胖小飯糰",
+    nickname: "圓圓小湯圓",
     about: "白羊座，偶爾出現打招呼。",
     interactionCount: 12,
     totalDonation: 79.52,
@@ -137,7 +137,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "兔兔仔球",
+    nickname: "小鹿斑比",
     about: "喜歡獨角獸、彩虹馬。",
     interactionCount: 10,
     totalDonation: 0,
@@ -147,7 +147,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "柚子cc",
+    nickname: "檸檬dd",
     about: "熟客，主播會熱情打招呼。",
     interactionCount: 7,
     totalDonation: 0,
@@ -157,7 +157,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "AISan",
+    nickname: "TechBoy",
     about: "偶爾出現。",
     interactionCount: 5,
     totalDonation: 0,
@@ -167,7 +167,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "連林恩",
+    nickname: "王小華",
     about: "住在中部。",
     interactionCount: 4,
     totalDonation: 0,
@@ -177,7 +177,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "路人甲",
+    nickname: "訪客A",
     about: "新觀眾。",
     interactionCount: 2,
     totalDonation: 0,
@@ -187,7 +187,7 @@ const viewers = [
     ]
   },
   {
-    nickname: "小明",
+    nickname: "阿強",
     about: "偶爾路過。",
     interactionCount: 1,
     totalDonation: 0,

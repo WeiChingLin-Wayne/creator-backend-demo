@@ -21,15 +21,15 @@ const emotions = [
 
 // 禮物/打賞
 const gifts = [
-  { time: 503, timestamp: "08:23", amount: 103.94, nickname: "Eva水水", reason: "參與媽祖擲筊環節的互動" },
-  { time: 550, timestamp: "09:10", amount: 311.55, nickname: "Fragrantcake故事氣味小商店", reason: "感謝擲筊問求財獲得聖杯" },
-  { time: 2322, timestamp: "38:42", amount: 79.52, nickname: "胖胖小飯糰", reason: "剛進場打招呼表示支持" }
+  { time: 503, timestamp: "08:23", amount: 103.94, nickname: "小雨點點", reason: "參與媽祖擲筊環節的互動" },
+  { time: 550, timestamp: "09:10", amount: 311.55, nickname: "星空小舖MoonShop", reason: "感謝擲筊問求財獲得聖杯" },
+  { time: 2322, timestamp: "38:42", amount: 79.52, nickname: "圓圓小湯圓", reason: "剛進場打招呼表示支持" }
 ];
 
 // 觀眾互動摘要
 const customers = [
   {
-    nickname: "Eva水水",
+    nickname: "小雨點點",
     about: "天秤座，活躍粉絲。送禮物給主播，表示不想問事只想單純聽主播聊天。關注天氣。",
     keyInteractions: "天秤座，送過「好好溝通」禮物，表示想聽聊天不想問事。",
     interactionLog: [
@@ -41,7 +41,7 @@ const customers = [
     ]
   },
   {
-    nickname: "Fragrantcake故事氣味小商店",
+    nickname: "星空小舖MoonShop",
     about: "非常想賺錢（求媽祖聖杯），送過「大富翁」禮物。養了一隻摩羯座的貓（焦慮到膀胱炎）。晨型人，週末會早起。",
     keyInteractions: "想賺大錢、送大富翁禮物、養了摩羯座的焦慮貓、晨型人。",
     interactionLog: [
@@ -53,7 +53,7 @@ const customers = [
     ]
   },
   {
-    nickname: "傻史尬",
+    nickname: "阿豆仔",
     about: "水瓶座，已婚七年，育有小孩。與老婆（白羊座）是在戀愛網站認識三個月閃婚。2024年工作轉念，被建議2026年要建立專業品牌。",
     keyInteractions: "水瓶座，網戀閃婚七年（老婆白羊），被建議明年要打磨專業。",
     interactionLog: [
@@ -65,7 +65,7 @@ const customers = [
     ]
   },
   {
-    nickname: "會計家教 Rock",
+    nickname: "數學老師 Stone",
     about: "處女座，職業是會計家教。體育迷，愛看英超（支持布萊頓，關注日本球員）和棒球（喜歡啦啦隊，去過大巨蛋20次）。剛生小孩，是新手爸爸，早起送小孩。",
     keyInteractions: "處女座老師，英超/棒球狂熱，剛生小孩的新手爸爸。",
     interactionLog: [
@@ -77,7 +77,7 @@ const customers = [
     ]
   },
   {
-    nickname: "丹尼",
+    nickname: "阿傑",
     about: "雙魚座，單身。極度熱愛工作與公司（讓主播驚訝），自稱口風緊。以前追過足球（亞洲球員），現在較少看。覺得大巨蛋演唱會票難搶。",
     keyInteractions: "雙魚座工作狂，單身，以前看足球，覺得公司很棒。",
     interactionLog: [
@@ -89,7 +89,7 @@ const customers = [
     ]
   },
   {
-    nickname: "米老鬼不是米老鼠",
+    nickname: "熊貓不是貓熊",
     about: "射手座。個性Chill，唯一焦慮是沒菸抽。很怕摩羯座（前主管磨合久、曾因得知追求對象是摩羯而放棄）。",
     keyInteractions: "射手座，沒菸抽會焦慮，討厭/害怕摩羯座。",
     interactionLog: [
@@ -100,7 +100,7 @@ const customers = [
     ]
   },
   {
-    nickname: "胖胖小飯糰",
+    nickname: "圓圓小湯圓",
     about: "白羊座。送過禮物「一口爆香」。",
     keyInteractions: "白羊座，送禮物。",
     interactionLog: [
