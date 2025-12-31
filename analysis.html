@@ -280,31 +280,37 @@
         .customer-body {
             padding: 20px;
         }
-        .key-interaction {
-            background: linear-gradient(90deg, #fff7ed 0%, #fffbf5 100%);
-            border-left: 3px solid #E65100;
-            padding: 10px 12px;
-            margin: -20px -20px 16px -20px;
+        .about-text {
+            font-size: 14px;
+            color: #1a1a1a;
+            line-height: 1.6;
+            margin-bottom: 16px;
         }
-        .key-interaction-label {
-            font-size: 10px;
-            color: #BF360C;
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #888;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
-            font-weight: 600;
         }
-        .key-interaction-text {
-            font-size: 14px;
-            color: #1a1a1a;
-            font-weight: 500;
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
         }
-
-        .about-text {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 16px;
+        .stat-value.highlight {
+            color: #E65100;
         }
 
         .interaction-log {
@@ -547,17 +553,34 @@
                     </div>
                 `).join('');
 
+                // 計算該觀眾的打賞金額
+                const donation = gifts
+                    .filter(g => g.nickname === customer.nickname)
+                    .reduce((sum, g) => sum + g.amount, 0);
+
                 card.innerHTML = `
                     <div class="customer-header">
                         <h4>${customer.nickname}</h4>
                         <span class="expand-icon">▼</span>
                     </div>
                     <div class="customer-body">
-                        <div class="key-interaction">
-                            <div class="key-interaction-label">重點互動</div>
-                            <div class="key-interaction-text">${customer.keyInteractions}</div>
-                        </div>
                         <p class="about-text">${customer.about}</p>
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-label">互動次數</div>
+                                <div class="stat-value">${customer.interactionLog.length}</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">累計打賞</div>
+                                <div class="stat-value ${donation > 0 ? 'highlight' : ''}">
+                                    ${donation > 0 ? '$' + donation.toFixed(0) : '-'}
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">最後互動</div>
+                                <div class="stat-value">${customer.interactionLog[customer.interactionLog.length - 1]?.time || '-'}</div>
+                            </div>
+                        </div>
                         <div class="interaction-log">
                             <div class="log-header">互動紀錄</div>
                             <div class="log-entries">
